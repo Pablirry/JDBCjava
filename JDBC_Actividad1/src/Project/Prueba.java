@@ -35,11 +35,15 @@ public class Prueba {
             // ^ Consultar la tabla persona
             consultarTablaPersona(conexion);
             // ^ Crear tabla contactos
-            // crearTablaContactos(conexion);
+            crearTablaContactos(conexion);
             // ^ Insertar datos en la tabla contactos
-            // insertarTablaContactos(conexion);
+            insertarTablaContactos(conexion);
             // ^ Modificar telefono por nombre
             modificarTelefonoPorNombre(conexion, "Juan", "653220027");
+            // ^ Modificar registro persona
+            modificarRegistroPersona(conexion);
+            // ^ Insertar registro persona
+            insertarRegistroPersona(conexion);
         } catch (ClassNotFoundException e) {
             System.out.println(e.getMessage());
         } catch (SQLException ex) {
@@ -75,14 +79,13 @@ public class Prueba {
         Statement stmt = conexion.createStatement();
         stmt.executeUpdate(borrarTabla);
 
-
-        String consulta ="CREATE TABLE contactos (" +
-                        "Id INT AUTO_INCREMENT PRIMARY KEY," +
-                        "Nombre VARCHAR(20)," +
-                        "Apellidos VARCHAR(40)," +
-                        "Telefono VARCHAR(10)," +
-                        "id_persona INT," +
-                        "FOREIGN KEY (id_persona) REFERENCES persona(id))"; 
+        String consulta = "CREATE TABLE contactos (" +
+                "Id INT AUTO_INCREMENT PRIMARY KEY," +
+                "Nombre VARCHAR(20)," +
+                "Apellidos VARCHAR(40)," +
+                "Telefono VARCHAR(10)," +
+                "id_persona INT," +
+                "FOREIGN KEY (id_persona) REFERENCES persona(id))";
         stmt.executeUpdate(consulta);
         System.out.println(ANSI_RESET + "********************************************************");
         System.out.println(ANSI_GREEN + "Tabla contactos creada");
@@ -91,9 +94,9 @@ public class Prueba {
 
     // ! 3. Modificar telefono por nombre
     public static void insertarTablaContactos(Connection conexion) throws SQLException {
-        String[] nombres = {"Juan", "Maria", "Pablo"};
-        String[] apellidos = {"Perez", "Fernandez", "Lopez"};
-        String[] telefono = {"985563214", "653252227", "679541418"};
+        String[] nombres = { "Juan", "Maria", "Pablo" };
+        String[] apellidos = { "Perez", "Fernandez", "Lopez" };
+        String[] telefono = { "985563214", "653252227", "679541418" };
 
         String consulta = "INSERT INTO contactos (nombre, apellidos, telefono) VALUES (?,?,?)";
         PreparedStatement stmt = conexion.prepareStatement(consulta);
@@ -111,12 +114,13 @@ public class Prueba {
     }
 
     // ! 4. Modificar telefono por nombre
-    public static void modificarTelefonoPorNombre(Connection conexion, String nombre, String nuevoTelefono) throws SQLException {
+    public static void modificarTelefonoPorNombre(Connection conexion, String nombre, String nuevoTelefono)
+            throws SQLException {
         String consulta = "UPDATE contactos SET telefono = '" + nuevoTelefono + "' WHERE nombre = '" + nombre + "'";
         Statement stmt = conexion.createStatement();
         int ru = stmt.executeUpdate(consulta);
 
-        if(ru > 0) {
+        if (ru > 0) {
             System.out.println(ANSI_RESET + "************************************************************");
             System.out.println(ANSI_GREEN + "Telefono de " + nombre + " actualizado correctamente");
         } else {
@@ -125,8 +129,39 @@ public class Prueba {
         }
     }
 
-    // ! Modificar registro persona
+    // ! 5. Modificar registro persona
     public static void modificarRegistroPersona(Connection conexion) throws SQLException {
-        
+        String consulta = "SELECT * FROM persona";
+        Statement stmt = conexion.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+        ResultSet rs = stmt.executeQuery(consulta);
+
+        if (rs.absolute(2)) { // Nos posicionamos en el registro 2
+            rs.updateString(2, "Pedro Lozano"); // Modificamos el campo "nombre"
+            rs.updateRow(); // Confirmamos los cambios
+            System.out.println(ANSI_GREEN + "Registro modificado correctamente.");
+        } else {
+            System.out.println(ANSI_RED + "No se encontró el registro especificado.");
+        }
+
+        rs.close();
+        stmt.close();
+    }
+
+    // ! 6. Insertar registro persona
+    public static void insertarRegistroPersona(Connection conexion) throws SQLException {
+        String consulta = "SELECT * FROM persona";
+        Statement stmt = conexion.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+        ResultSet rs = stmt.executeQuery(consulta);
+
+        rs.moveToInsertRow();
+        rs.updateString("nombre", "Carlos Gómez");
+        rs.updateDate("nacimiento", java.sql.Date.valueOf("2002-06-15"));
+        rs.insertRow();
+
+        System.out.println(ANSI_GREEN + "Nuevo registro creado correctamente");
+
+        rs.close();
+        stmt.close();
+
     }
 }
