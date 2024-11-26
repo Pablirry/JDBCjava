@@ -37,18 +37,18 @@ public class Prueba {
             // ^ Crear tabla contactos
             crearTablaContactos(conexion);
             // ^ Insertar datos en la tabla contactos
-            insertarTablaContactos(conexion);
+            // insertarTablaContactos(conexion);
             // ^ Modificar telefono por nombre
-            modificarTelefonoPorNombre(conexion, "Juan", "653220027");
+            // modificarTelefonoPorNombre(conexion, "Juan", "653220027");
             // ^ Modificar registro persona
-            modificarRegistroPersona(conexion);
+            // modificarRegistroPersona(conexion);
             // ^ Insertar registro persona
-            insertarRegistroPersona(conexion);
+            // insertarRegistroPersona(conexion);
         } catch (ClassNotFoundException e) {
             System.out.println(e.getMessage());
         } catch (SQLException ex) {
             System.out.println(ANSI_RED + "error en la conexion");
-        } finally { // Se cierra la conexión con la base de datos.
+        } finally { // ! Se cierra la conexión con la base de datos.
             try {
                 if (conexion != null) {
                     conexion.close();
@@ -70,15 +70,21 @@ public class Prueba {
             System.out.println("ID: " + rs.getInt("id") + ", Nombre: " + rs.getString("nombre") + ", Nacimiento: "
                     + rs.getDate("nacimiento"));
         }
+        
+        rs.close();
+        stmt.close();
     }
 
     // ! 2. Crear tabla contactos
     public static void crearTablaContactos(Connection conexion) throws SQLException {
 
-        String borrarTabla = "DROP TABLE IF EXISTS contactos";
-        Statement stmt = conexion.createStatement();
-        stmt.executeUpdate(borrarTabla);
-
+    	/*
+    	* String borrarTabla = "DROP TABLE IF EXISTS contactos";
+        * stmt.executeUpdate(borrarTabla);
+        */
+    	
+    	Statement stmt = conexion.createStatement();
+        
         String consulta = "CREATE TABLE contactos (" +
                 "Id INT AUTO_INCREMENT PRIMARY KEY," +
                 "Nombre VARCHAR(20)," +
@@ -86,13 +92,17 @@ public class Prueba {
                 "Telefono VARCHAR(10)," +
                 "id_persona INT," +
                 "FOREIGN KEY (id_persona) REFERENCES persona(id))";
-        stmt.executeUpdate(consulta);
-        System.out.println(ANSI_RESET + "********************************************************");
-        System.out.println(ANSI_GREEN + "Tabla contactos creada");
+        boolean resul = stmt.execute(consulta);
+        if(resul == true) {
+        	System.out.println(ANSI_GREEN + "Tabla contactos creada");
+        }else {
+        	System.out.println(ANSI_RED + "Tabla no creada");
+        }
+        
         stmt.close();
     }
 
-    // ! 3. Modificar telefono por nombre
+    // ! 3. Insertar registros en la tabla contacos
     public static void insertarTablaContactos(Connection conexion) throws SQLException {
         String[] nombres = { "Juan", "Maria", "Pablo" };
         String[] apellidos = { "Perez", "Fernandez", "Lopez" };
@@ -108,23 +118,27 @@ public class Prueba {
             stmt.executeUpdate();
         }
 
-        System.out.println(ANSI_RESET + "********************************************************");
-        System.out.println(ANSI_GREEN + "Datos ingresados correctamente en la tabla contactos");
+        int resul = stmt.executeUpdate();
 
+        if(resul == 1){
+            System.out.println(ANSI_GREEN + "Contactos insertado");
+        }else{
+            System.err.println(ANSI_RED + "Contactos no insertados");
+        }
+
+        stmt.close();
     }
 
     // ! 4. Modificar telefono por nombre
-    public static void modificarTelefonoPorNombre(Connection conexion, String nombre, String nuevoTelefono)
-            throws SQLException {
+    public static void modificarTelefonoPorNombre(Connection conexion, String nombre, String nuevoTelefono) throws SQLException {
         String consulta = "UPDATE contactos SET telefono = '" + nuevoTelefono + "' WHERE nombre = '" + nombre + "'";
         Statement stmt = conexion.createStatement();
         int ru = stmt.executeUpdate(consulta);
 
         if (ru > 0) {
-            System.out.println(ANSI_RESET + "************************************************************");
             System.out.println(ANSI_GREEN + "Telefono de " + nombre + " actualizado correctamente");
         } else {
-            System.out.println(ANSI_RESET + "************************************************************");
+
             System.out.println(ANSI_RED + "No se ha encontrado a ningún contacto con el nombre " + nombre);
         }
     }
@@ -162,6 +176,5 @@ public class Prueba {
 
         rs.close();
         stmt.close();
-
     }
 }
