@@ -22,6 +22,7 @@ public class Prueba {
     public static final String ANSI_WHITE = "\u001B[37m";
     public static final String ANSI_RESET = "\u001B[0m";
 
+
     public static void main(String[] args) {
         Connection conexion = null;
 
