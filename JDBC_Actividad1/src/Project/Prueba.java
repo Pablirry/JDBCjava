@@ -8,6 +8,10 @@ import java.sql.SQLException;
 
 public class Prueba {
 
+    private static final String url = "jdbc:mysql://localhost/prueba_persona";
+    private static final String user = "root";
+    private static final String password = "root";
+
     public static final String ANSI_BLACK = "\u001B[30m";
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_GREEN = "\u001B[32m";
@@ -28,7 +32,7 @@ public class Prueba {
             // Se obtiene una conexión con la base de datos.
             // En este caso nos conectamos a la base de datos prueba
             // con el usuario root y contraseña root
-            conexion = DriverManager.getConnection("jdbc:mysql://localhost/prueba_persona", "root", "root");
+            conexion = DriverManager.getConnection(url, user, password);
             System.out.println(ANSI_RESET + "TODO CORRECTO, conexion correcta ");
 
             // ^ Consultar la tabla persona
@@ -42,7 +46,8 @@ public class Prueba {
             // ^ Modificar registro persona
             modificarRegistroPersona(conexion, "Pedro Picapiedra", 3);
             // ^ Insertar registro persona
-            insertarRegistroPersona(conexion, "Carlos Perez", "2003-01-10");
+            insertarRegistroPersona(conexion, "Pedro Diaz", "2002-05-12");
+            
         } catch (ClassNotFoundException e) {
             System.out.println(e.getMessage());
         } catch (SQLException ex) {
@@ -64,7 +69,7 @@ public class Prueba {
         String consulta = "SELECT * FROM persona";
         Statement stmt = conexion.createStatement();
         ResultSet rs = stmt.executeQuery(consulta);
-        System.out.println(ANSI_GREEN + "Tabla persona:");
+        System.out.println(ANSI_BLUE + "Tabla persona:");
 
         while (rs.next()) {
             System.out.println("ID: " + rs.getInt("id") + ", Nombre: " + rs.getString("nombre") +
@@ -78,24 +83,32 @@ public class Prueba {
     // ! 2. Crear tabla contactos
     public static void crearTablaContactos(Connection conexion) throws SQLException {
 
-        Statement stmt = conexion.createStatement();
+        Statement stmt = null;
+        
+        try {
+        	stmt = conexion.createStatement();
+        	// Borrar la tabla si ya existe
+            String borrarTabla = "DROP TABLE IF EXISTS contactos";
+            stmt.executeUpdate(borrarTabla);
 
-        // Borrar la tabla si ya existe
-        String borrarTabla = "DROP TABLE IF EXISTS contactos";
-        stmt.executeUpdate(borrarTabla);
+            // Crear la tabla contactos
+            String consulta = "CREATE TABLE contactos (" +
+                    "Id INT AUTO_INCREMENT PRIMARY KEY," +
+                    "Nombre VARCHAR(20)," +
+                    "Apellidos VARCHAR(40)," +
+                    "Telefono VARCHAR(10)," +
+                    "id_persona INT," +
+                    "FOREIGN KEY (id_persona) REFERENCES persona(id))";
+            stmt.execute(consulta);
+            System.out.println(ANSI_GREEN + "Tabla contactos creada");
 
-        // Crear la tabla contactos
-        String consulta = "CREATE TABLE contactos (" +
-                "Id INT AUTO_INCREMENT PRIMARY KEY," +
-                "Nombre VARCHAR(20)," +
-                "Apellidos VARCHAR(40)," +
-                "Telefono VARCHAR(10)," +
-                "id_persona INT," +
-                "FOREIGN KEY (id_persona) REFERENCES persona(id))";
-        stmt.execute(consulta);
-        System.out.println(ANSI_GREEN + "Tabla contactos creada");
-
-        stmt.close();
+        } catch (SQLException e) {
+			System.out.println("No se pudo crear la tabla");
+		} finally {
+			if(stmt != null) {
+				stmt.close();
+			}
+		}
     }
 
     // ! 3. Insertar registros en la tabla contacos
@@ -120,7 +133,6 @@ public class Prueba {
 
         } catch (SQLException ex) {
             System.out.println(ANSI_RED + "Error al insertar contactos: " + ex.getMessage());
-            throw ex; // Re-lanzar la excepción para manejo posterior
         } finally {
             if (stmt != null) {
                 stmt.close();
