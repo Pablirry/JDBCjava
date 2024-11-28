@@ -47,4 +47,9 @@ public class Coche {
 		this.dniP = dniP;
 	}
 
+	@Override
+	public String toString() {
+		return "Coche [matricula=" + matricula + ", marca=" + marca + ", precio=" + precio + ", dniP=" + dniP + "]";
+	}
+
 }

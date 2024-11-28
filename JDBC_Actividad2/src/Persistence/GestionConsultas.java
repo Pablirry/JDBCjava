@@ -75,4 +75,8 @@ public class GestionConsultas {
 
     }
 
+    public void insertarNuevoPropietario() {
+        
+    }
+
 }

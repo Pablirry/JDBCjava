@@ -50,7 +50,7 @@ public class Taller {
         return texto;
     }
 
-    public void insertarNuevoPropietario(String dni, String nombre, int i) {
+    public void insertarNuevoPropietario(String dni, String nombre, int edad) {
         // ! VALIDAR...
         Propietario p = null;
         gestor.insertarNuevoPropietario();

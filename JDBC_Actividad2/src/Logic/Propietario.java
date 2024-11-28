@@ -36,4 +36,9 @@ public class Propietario {
 		this.edad = edad;
 	}
 
+	@Override
+	public String toString() {
+		return "Propietario [dni=" + dni + ", nombre=" + nombre + ", edad=" + edad + "]";
+	}
+
 }
