@@ -1,15 +1,16 @@
 package Logic;
 
 public class Propietario {
-	
+
 	private String dni;
 	private String nombre;
 	private int edad;
-	
+
 	public Propietario(String dni, String nombre, int edad) {
+		super();
 		this.dni = dni;
-		this.edad = edad;
 		this.nombre = nombre;
+		this.edad = edad;
 	}
 
 	public String getDni() {
