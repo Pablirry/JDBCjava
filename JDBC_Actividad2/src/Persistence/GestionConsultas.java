@@ -2,7 +2,7 @@ package Persistence;
 
 import java.sql.*;
 
-import Exceptions.ExcepcionPersistencia;
+import Error.ExcepcionPersistencia;
 import Logic.Coche;
 import Logic.Propietario;
 import Logic.Taller;

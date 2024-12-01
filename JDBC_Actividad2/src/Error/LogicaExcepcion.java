@@ -1,4 +1,4 @@
-package Exceptions;
+package Error;
 
 public class LogicaExcepcion extends Exception {
 	

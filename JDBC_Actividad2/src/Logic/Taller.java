@@ -3,8 +3,8 @@ package Logic;
 import java.util.ArrayList;
 import java.util.List;
 
-import Exceptions.ExcepcionPersistencia;
-import Exceptions.LogicaExcepcion;
+import Error.ExcepcionPersistencia;
+import Error.LogicaExcepcion;
 import Persistence.GestionConsultas;
 
 public class Taller {
