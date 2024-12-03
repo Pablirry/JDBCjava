@@ -1,8 +1,10 @@
 package Persistence;
 
 import java.sql.*;
+import java.util.List;
 
 import Error.ExcepcionPersistencia;
+import Error.LogicaExcepcion;
 import Logic.Coche;
 import Logic.Propietario;
 import Logic.Taller;
@@ -11,7 +13,7 @@ public class GestionConsultas {
 
     private static final String url = "jdbc:mysql://localhost/concesionario";
     private static final String user = "root";
-    private static final String pass = "";
+    private static final String pass = "root";
     private static final String driver = "com.mysql.cj.jdbc.Driver";
 
     public void leerCoches(Taller taller) {
@@ -97,8 +99,8 @@ public class GestionConsultas {
 
     }
 
-    public void buscarCoche(Taller taller) {
-
+    public String buscarCoche(String matricula) {
+        return "";
     }
 
     public void insertarNuevoPropietario(Propietario p) throws ExcepcionPersistencia {
@@ -162,6 +164,29 @@ public class GestionConsultas {
             }
         }
 
+    }
+
+    public void borrarCoche(Coche c) throws ExcepcionPersistencia, LogicaExcepcion, SQLException {
+
+        Statement st = StatementSingleton.getInstance();
+        String sentencia = "DELETE FROM coche WHERE matricula = '" + c.getMatricula() + "'";
+        int regAfectado;
+
+        regAfectado = st.executeUpdate(sentencia);
+        System.out.println("Traza numero de registros afectados: " + regAfectado);
+
+    }
+
+    public void borrarPropietario(Propietario p, List<Coche> cochePropietario)
+            throws ExcepcionPersistencia, LogicaExcepcion, SQLException {
+        for (Coche c : cochePropietario) {
+            this.borrarCoche(c);
+        }
+        Statement st = StatementSingleton.getInstance();
+        String sentencia = "DELETE FROM propietario WHERE dni = '" + p.getDni() + "'";
+        st.executeUpdate(sentencia);
+
+        st.close();
     }
 
 }

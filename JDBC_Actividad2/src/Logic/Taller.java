@@ -1,6 +1,8 @@
 package Logic;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import Error.ExcepcionPersistencia;
@@ -39,9 +41,10 @@ public class Taller {
     }
 
     public Coche buscarCoche(String matricula) {
-        for (Coche c : this.coches) {
-            if (c.getMarca().compareTo(matricula) == 0)
-                return c;
+        for (Coche coche : this.coches) {
+            if (coche.getMatricula().equals(matricula)) {
+                return coche;
+            }
         }
         return null;
     }
@@ -98,16 +101,43 @@ public class Taller {
 
     }
 
-    public void borrarCoche(String matricula) {
-        // TODO Auto-generated method stub
-
+    public void borrarCoche(String matricula) throws LogicaExcepcion {
+        Coche c = buscarCoche(matricula);
+        if (c == null) {
+            throw new LogicaExcepcion("Error borrar coche: coche no encontrado");
+        }
+        System.out.println("Coche encontrado: " + c.getMatricula());
+        try {
+            gestor.borrarCoche(c);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        this.coches.remove(c);
     }
 
-    public void borrarPropietario(String dni) {
+    public void borrarPropietario(String dni) throws LogicaExcepcion, ExcepcionPersistencia, SQLException {
 
-        // Borrar todos los coches del propietario
-
-        // Borrar el proipetario
+        // ^ Validar
+        Propietario p = buscarPropietario(dni);
+        if (p == null) {
+            throw new LogicaExcepcion("Propietario no existe");
+        }
+        List<Coche> cochePropietario = new ArrayList<Coche>();
+        for (Coche c : coches) {
+            if (c.getDniPropietario().compareTo(dni) == 0) {
+                cochePropietario.add(c);
+            }
+        }
+        gestor.borrarPropietario(p, cochePropietario);
+        // ! Usar Iterator para evitar la excepcion de modificacion
+        Iterator<Coche> iterator = coches.iterator();
+        while (iterator.hasNext()) {
+            Coche c = iterator.next();
+            if (c.getDniPropietario().compareTo(dni) == 0) {
+                iterator.remove();
+            }
+        }
+        propietarios.remove(p);
     }
 
 }

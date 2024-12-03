@@ -1,7 +1,7 @@
 package Error;
 
 public class ExcepcionPersistencia extends Exception {
-	
+
 	public ExcepcionPersistencia() {
 		// TODO Auto-generated constructor stub
 	}

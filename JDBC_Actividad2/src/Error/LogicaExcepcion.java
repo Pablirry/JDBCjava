@@ -1,7 +1,7 @@
 package Error;
 
 public class LogicaExcepcion extends Exception {
-	
+
 	public LogicaExcepcion() {
 		// TODO Auto-generated constructor stub
 	}
