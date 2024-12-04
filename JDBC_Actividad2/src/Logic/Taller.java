@@ -1,5 +1,8 @@
 package Logic;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -10,6 +13,11 @@ import Error.LogicaExcepcion;
 import Persistence.GestionConsultas;
 
 public class Taller {
+
+    private static final String url = "jdbc:mysql://localhost/concesionario";
+    private static final String user = "root";
+    private static final String pass = "root";
+    private static final String driver = "com.mysql.cj.jdbc.Driver";
 
     private List<Coche> coches;
     private List<Propietario> propietarios;
@@ -138,6 +146,58 @@ public class Taller {
             }
         }
         propietarios.remove(p);
+    }
+
+    public void insertar2(List<Propietario> lista) {
+        Connection conexion = null;
+        try {
+            Class.forName(driver);
+            conexion = DriverManager.getConnection(url, user, pass);
+
+            String consulta = "insert into propietario values(?,?,?)";
+            PreparedStatement ps = conexion.prepareStatement(consulta);
+
+            for (int i = 0; i < lista.size(); i++) {
+
+                Propietario p = lista.get(i);
+                ps.setString(1, p.getDni());
+                ps.setString(2, p.getNombre());
+                ps.setInt(3, p.getEdad());
+
+                ps.executeUpdate();
+            }
+        } catch (ClassNotFoundException e) {
+
+            e.printStackTrace();
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+        }
+
+    }
+
+    public void incrementaEdad() {
+        try {
+            try {
+                gestor.incrementaEdad();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void listarInfo() {
+        try {
+            gestor.listarInfo();
+        } catch (ClassNotFoundException e) {
+
+            e.printStackTrace();
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+        }
     }
 
 }

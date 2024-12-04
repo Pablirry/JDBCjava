@@ -189,4 +189,45 @@ public class GestionConsultas {
         st.close();
     }
 
-}
+    public void incrementaEdad() throws ClassNotFoundException, SQLException {
+        Connection conexion = null;
+
+        Class.forName(driver);
+        conexion = DriverManager.getConnection(url, user, pass);
+
+        String consulta = "update coche set precio=?";
+        PreparedStatement ps = conexion.prepareStatement(consulta);
+        ps.setInt(1, 20);
+        int resul = ps.executeUpdate();
+        System.out.println("Actualiza precio " + resul);
+    }
+
+    public void listarInfo() throws ClassNotFoundException, SQLException {
+        Connection conexion = null;
+
+        Class.forName(driver);
+        conexion = DriverManager.getConnection(url, user, pass);
+
+        DatabaseMetaData datos = conexion.getMetaData();
+        System.out.println("Nombre " + datos.getDatabaseProductName());
+        ResultSet rs = datos.getCatalogs();
+        System.out.println("Nombre " + datos.getDatabaseProductName());
+        System.out.println("tablas " + datos.getUserName());
+
+        /*
+        while (rs.next()) {
+            ResultSetMetaData tabla = rs.getMetaData();
+
+            
+             * for (int i = 0; i < tabla.getColumnCount(); i++) {
+             * System.out.println(tabla.getColumnName(i));
+             * }
+             *
+        */
+            
+        }
+        
+
+    }
+
+
