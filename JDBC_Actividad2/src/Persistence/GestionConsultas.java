@@ -1,6 +1,7 @@
 package Persistence;
 
 import java.sql.*;
+
 import java.util.List;
 
 import Error.ExcepcionPersistencia;
@@ -203,27 +204,59 @@ public class GestionConsultas {
     }
 
     public void listarInfo() throws ClassNotFoundException, SQLException {
-        Connection conexion = null;
+    	Connection conexion = null;
 
-        Class.forName(driver);
-        conexion = DriverManager.getConnection(url, user, pass);
+        try {
+            // Cargar el driver
+            Class.forName(driver);
+            conexion = DriverManager.getConnection(url, user, pass);
 
-        DatabaseMetaData datos = conexion.getMetaData();
-        System.out.println("Nombre " + datos.getDatabaseProductName());
-        ResultSet rs = datos.getCatalogs();
-        System.out.println("Nombre " + datos.getDatabaseProductName());
-        System.out.println("tablas " + datos.getUserName());
+            // Obtener metadatos de la base de datos
+            DatabaseMetaData datos = conexion.getMetaData();
 
-        /*
-        while (rs.next()) {
-            ResultSetMetaData tabla = rs.getMetaData();
+            // Mostrar información general de la base de datos
+            System.out.println("Nombre del Producto: " + datos.getDatabaseProductName());
+            System.out.println("Versión del Producto: " + datos.getDatabaseProductVersion());
+            System.out.println("Nombre del Usuario: " + datos.getUserName());
 
-            
-             * for (int i = 0; i < tabla.getColumnCount(); i++) {
-             * System.out.println(tabla.getColumnName(i));
-             * }
-             *
-        */
+            // Obtener y mostrar los catálogos (bases de datos)
+            ResultSet rsCatalogs = datos.getCatalogs();
+            System.out.println("\nCatálogos (Bases de datos):");
+            while (rsCatalogs.next()) {
+                System.out.println("- " + rsCatalogs.getString(1));
+            }
+
+            // Obtener y mostrar las tablas de la base de datos actual
+            String catalog = conexion.getCatalog(); // Catalogo actual
+            String schemaPattern = null; // Patrón de esquema, null para todos
+            String tableNamePattern = "%"; // Patrón de nombre de tabla
+            String[] types = {"TABLE"}; // Solo tablas
+
+            ResultSet rsTables = datos.getTables(catalog, schemaPattern, tableNamePattern, types);
+            System.out.println("\nTablas:");
+            while (rsTables.next()) {
+                String tableName = rsTables.getString("TABLE_NAME");
+                System.out.println("Tabla: " + tableName);
+
+                // Obtener columnas de cada tabla
+                ResultSet rsColumns = datos.getColumns(catalog, schemaPattern, tableName, "%");
+                System.out.println("  Columnas:");
+                while (rsColumns.next()) {
+                    String columnName = rsColumns.getString("COLUMN_NAME");
+                    String columnType = rsColumns.getString("TYPE_NAME");
+                    int columnSize = rsColumns.getInt("COLUMN_SIZE");
+                    System.out.println("    - " + columnName + " (" + columnType + " (" + columnSize + "))");
+                }
+                rsColumns.close();
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error SQL: " + e.getMessage());
+        } finally {
+            if (conexion != null) {
+                conexion.close();
+            }
+        }
             
         }
         
