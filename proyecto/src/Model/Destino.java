@@ -98,7 +98,7 @@ public class Destino implements Mostrable{
 
 	@Override
 	public String toString() {
-		 return tipo + "Destino: " + nombre + "\nDescripción: " + descripcion + "\nRegión: " + region + "\nClima: " + clima;
+		 return "Destino: " + nombre + "(" + tipo + ")" + "\nDescripción: " + descripcion + "\nRegión: " + region + "\nClima: " + clima + "\n";
 	}
 	
 	/**
@@ -110,5 +110,31 @@ public class Destino implements Mostrable{
 		System.out.println(this.toString());
 		
 	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
+	public void setRegion(String region) {
+		this.region = region;
+	}
+
+	public void setClima(String clima) {
+		this.clima = clima;
+	}
+
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
+	}
+
+	public void setActividadesRecomendadas(List<String> actividadesRecomendadas) {
+		this.actividadesRecomendadas = actividadesRecomendadas;
+	}
+
+	
 
 }

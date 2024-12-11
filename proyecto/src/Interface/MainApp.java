@@ -10,18 +10,17 @@ import java.util.List;
 import java.util.Scanner;
 
 public class MainApp {
-	
+
 	private static List<Destino> destinos = new ArrayList<>();
-    private static List<Actividad> actividades = new ArrayList<>();
+	private static List<Actividad> actividades = new ArrayList<>();
 
 	public static void main(String[] args) {
 		try {
-			GestorJDBC dbManager = new GestorJDBC(); 
-			Scanner scanner = new Scanner(System.in);
-		
-            // Load initial data from CSV
-            List<Destino> destinosCsv = CsvReader.cargarDestinosCsv("destinos.csv", destinos);
-            List<Actividad> actividadesCsv = CsvReader.cargarActividadesCsv("actividades.csv", actividades);
+			GestorJDBC dbManager = new GestorJDBC();
+			Scanner sc = new Scanner(System.in);
+
+			List<Destino> destinosCsv = CsvReader.cargarDestinosCsv("destinos.csv", destinos);
+			List<Actividad> actividadesCsv = CsvReader.cargarActividadesCsv("actividades.csv", actividades);
 
 			dbManager.sincronizarDestinosDesdeCsv(destinosCsv);
 			dbManager.sincronizarActividadesDesdeCsv(actividadesCsv);
@@ -29,15 +28,16 @@ public class MainApp {
 			int opcion;
 			do {
 				mostrarMenu();
-				opcion = Integer.parseInt(scanner.nextLine());
+				opcion = Integer.parseInt(sc.nextLine().trim());
 
 				switch (opcion) {
 				case 1 -> listarDestinos(dbManager);
 				case 2 -> listarActividades(dbManager);
-				case 3 -> insertarDestino(dbManager, scanner);
-				case 4 -> insertarActividad(dbManager, scanner);
-				case 5 -> eliminarDestino(dbManager, scanner);
-				case 6 -> actualizarDestino(dbManager, scanner);
+				case 3 -> insertarDestino(dbManager, sc);
+				case 4 -> insertarActividad(dbManager, sc);
+				case 5 -> eliminarDestino(dbManager, sc);
+				case 6 -> eliminarActividad(dbManager, sc);
+				case 7 -> actualizarDestino(dbManager, sc);
 				case 0 -> System.out.println("Saliendo de la aplicación...");
 				default -> System.out.println("Opción no válida.");
 				}
@@ -48,6 +48,10 @@ public class MainApp {
 		}
 	}
 
+	/**
+	 * Metodo para mostrar menu de opciones
+	 */
+
 	private static void mostrarMenu() {
 		System.out.println("\n---- Turismo Database App ----");
 		System.out.println("1. Listar destinos");
@@ -55,9 +59,17 @@ public class MainApp {
 		System.out.println("3. Insertar destino");
 		System.out.println("4. Insertar actividad");
 		System.out.println("5. Eliminar destino");
-		System.out.println("6. Actualizar destino");
+		System.out.println("6. Eliminar actividad");
+		System.out.println("7. Actualizar destino");
 		System.out.println("0. Salir");
 	}
+
+	/**
+	 * Metodo para listar los destinos
+	 * 
+	 * @param dbManager
+	 * @throws SQLException
+	 */
 
 	private static void listarDestinos(GestorJDBC dbManager) throws SQLException {
 		List<Destino> destinos = dbManager.listarDestinos();
@@ -67,6 +79,13 @@ public class MainApp {
 		}
 	}
 
+	/**
+	 * Metodo para listar las actividades
+	 * 
+	 * @param dbManager
+	 * @throws SQLException
+	 */
+
 	private static void listarActividades(GestorJDBC dbManager) throws SQLException {
 		List<Actividad> actividades = dbManager.listarActividades();
 		System.out.println("\n---- Lista de Actividades ----");
@@ -74,6 +93,14 @@ public class MainApp {
 			System.out.println(actividad);
 		}
 	}
+
+	/**
+	 * Metodo para insertar destinos
+	 * 
+	 * @param dbManager
+	 * @param sc
+	 * @throws SQLException
+	 */
 
 	private static void insertarDestino(GestorJDBC dbManager, Scanner sc) throws SQLException {
 		System.out.print("Nombre: ");
@@ -89,8 +116,18 @@ public class MainApp {
 
 		Destino destino = new Destino(nombre, descripcion, region, clima, List.of("Actividades"));
 		dbManager.insertarDestino(destino);
+		destinos.add(destino);
+		CsvReader.guardarDestinosCsv("destinos.csv", destinos);
 		System.out.println("Destino insertado con éxito.");
 	}
+
+	/**
+	 * Metodo para insertar una nueva actividad
+	 * 
+	 * @param dbManager
+	 * @param scanner
+	 * @throws SQLException
+	 */
 
 	private static void insertarActividad(GestorJDBC dbManager, Scanner scanner) throws SQLException {
 		System.out.print("Nombre: ");
@@ -106,23 +143,82 @@ public class MainApp {
 
 		Actividad actividad = new Actividad(nombre, tipo, precio, duracion, dificultad);
 		dbManager.insertarActividad(actividad);
+		actividades.add(actividad);
+		CsvReader.guardarActividadesCsv("actividades.csv", actividades);
 		System.out.println("Actividad insertada con éxito.");
 	}
+
+	/**
+	 * Metodo para eliminar un destino
+	 * 
+	 * @param dbManager
+	 * @param scanner
+	 * @throws SQLException
+	 */
 
 	private static void eliminarDestino(GestorJDBC dbManager, Scanner scanner) throws SQLException {
 		System.out.print("Nombre del destino a eliminar: ");
 		String nombre = scanner.nextLine();
-		dbManager.eliminarDestino(nombre);
-		System.out.println("Destino eliminado con éxito.");
+		if (dbManager.eliminarDestino(nombre)) {
+			for (int i = 0; i < destinos.size(); i++) {
+				if (destinos.get(i).getNombre().equalsIgnoreCase(nombre)) {
+					destinos.remove(i);
+					break;
+				}
+			}
+			CsvReader.guardarDestinosCsv("destinos.csv", destinos);
+			System.out.println("Destino eliminado con éxito.");
+		} else {
+			System.out.println("Destino no encontrado en la base de datos.");
+		}
 	}
 
-	private static void actualizarDestino(GestorJDBC dbManager, Scanner scanner) throws SQLException {
-		System.out.print("Nombre del destino a actualizar: ");
+	/**
+	 * Metodo para eliminar una actividad
+	 * 
+	 * @param dbManager
+	 * @param scanner
+	 * @throws SQLException
+	 */
+
+	private static void eliminarActividad(GestorJDBC dbManager, Scanner scanner) throws SQLException {
+		System.out.print("Nombre de la actividad a eliminar: ");
 		String nombre = scanner.nextLine();
+		if (dbManager.eliminarActividad(nombre)) {
+			for (int i = 0; i < actividades.size(); i++) {
+				if (actividades.get(i).getNombre().equalsIgnoreCase(nombre)) {
+					actividades.remove(i);
+					break;
+				}
+			}
+			CsvReader.guardarActividadesCsv("actividades.csv", actividades);
+			System.out.println("Actividad eliminada con éxito.");
+		} else {
+			System.out.println("Actividad no encontrada en la base de datos.");
+		}
+	}
+
+	/**
+	 * Metodo para actualizar un destino
+	 * 
+	 * @param dbManager
+	 * @param sc
+	 * @throws SQLException
+	 */
+
+	private static void actualizarDestino(GestorJDBC dbManager, Scanner sc) throws SQLException {
+		System.out.print("Nombre del destino a actualizar: ");
+		String nombre = sc.nextLine();
 		System.out.print("Nueva descripción: ");
-		String nuevaDescripcion = scanner.nextLine();
+		String nuevaDescripcion = sc.nextLine();
 		dbManager.actualizarDestino(nombre, nuevaDescripcion);
+		for (Destino destino : destinos) {
+			if (destino.getNombre().equalsIgnoreCase(nombre)) {
+				destino.setDescripcion(nuevaDescripcion);
+				break;
+			}
+		}
+		CsvReader.guardarDestinosCsv("destinos.csv", destinos);
 		System.out.println("Destino actualizado con éxito.");
 	}
-
 }

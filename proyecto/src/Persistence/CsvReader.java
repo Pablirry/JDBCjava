@@ -75,7 +75,7 @@ public class CsvReader {
 
 	        }
 	    } catch (IOException e) {
-	        throw new ArchivoNoEncontradoException("Error al leer el archivo de actividades: " + archivo);
+	        System.out.println("Error al leer el archivo de actividades: " + archivo);
 	    }
 		return actividades;
 	}
@@ -88,7 +88,7 @@ public class CsvReader {
 	
 	public static void guardarActividadesCsv (String archivo, List<Actividad> actividades) {
 		
-		try (PrintWriter pw = new PrintWriter(new FileWriter(archivo))) {
+		try (PrintWriter pw = new PrintWriter(new FileWriter(DATA +  archivo))) {
 
             pw.println("Tipo;Nombre;Precio;Duración;Nivel de Dificultad");
 
@@ -112,7 +112,7 @@ public class CsvReader {
 	 */
 		
 	public static void guardarDestinosCsv(String archivo, List<Destino> destinos) {
-	       try (PrintWriter pw = new PrintWriter(new FileWriter(archivo))) {
+	       try (PrintWriter pw = new PrintWriter(new FileWriter(DATA + archivo))) {
 	    	   
 	    	   pw.println("Tipo;Nombre;Descripción;Región;Clima");
 
