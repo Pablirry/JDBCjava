@@ -19,6 +19,7 @@ public class Taller {
     private static final String pass = "root";
     private static final String driver = "com.mysql.cj.jdbc.Driver";
 
+
     private List<Coche> coches;
     private List<Propietario> propietarios;
 

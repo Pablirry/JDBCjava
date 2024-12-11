@@ -1,12 +1,5 @@
 package Interface;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
-import Error.ExcepcionPersistencia;
-import Error.LogicaExcepcion;
-import Logic.Propietario;
 import Logic.Taller;
 
 public class Principal {
@@ -58,6 +51,8 @@ public class Principal {
 		// taller.incrementaEdad();
 
 		taller.listarInfo();
+
+
 
 	}
 
