@@ -14,7 +14,7 @@ import Persistence.GestionConsultas;
 
 public class Taller {
 
-    private static final String url = "jdbc:mysql://localhost/concesionario";
+    private static final String url = "jdbc:mysql://localhost/VENTAS";
     private static final String user = "root";
     private static final String pass = "root";
     private static final String driver = "com.mysql.cj.jdbc.Driver";

@@ -1,10 +1,13 @@
 package Interface;
 
+import java.sql.SQLException;
+
 import Logic.Taller;
+import Persistence.BBDD_Ficheros;
 
 public class Principal {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SQLException {
 
 		Taller taller = new Taller();
 		/*
@@ -45,7 +48,8 @@ public class Principal {
 		lista.add(new Propietario("XXX5C", "Paco5", 50));
 		taller.insertar2(lista);
 		*/
-
+		
+		// BBDD_Ficheros.getInstance();
 		// System.out.println(taller.mostrarDatos());
 
 		// taller.incrementaEdad();

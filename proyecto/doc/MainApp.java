@@ -19,15 +19,12 @@ public class MainApp {
 			GestorJDBC dbManager = new GestorJDBC();
 			Scanner sc = new Scanner(System.in);
 
-			destinos = CsvReader.cargarDestinosCsv("destinos.csv", destinos);
-			actividades = CsvReader.cargarActividadesCsv("actividades.csv", actividades);
+			List<Destino> destinosCsv = CsvReader.cargarDestinosCsv("destinos.csv", destinos);
+			List<Actividad> actividadesCsv = CsvReader.cargarActividadesCsv("actividades.csv", actividades);
 
 			
-			dbManager.sincronizarActividadesDesdeCsv(actividades);
-			dbManager.sincronizarDestinosDesdeCsv(destinos);
-
-			CsvReader.guardarDestinosCsv("destinos.csv", dbManager.listarDestinos());
-			CsvReader.guardarActividadesCsv("actividades.csv", dbManager.listarActividades());
+			dbManager.sincronizarActividadesDesdeCsv(actividadesCsv);
+			dbManager.sincronizarDestinosDesdeCsv(destinosCsv);
 
 			int opcion;
 			do {
@@ -76,7 +73,7 @@ public class MainApp {
 	 */
 
 	private static void listarDestinos(GestorJDBC dbManager) throws SQLException {
-		destinos = dbManager.listarDestinos();
+		List<Destino> destinos = dbManager.listarDestinos();
 		System.out.println("\n---- Lista de Destinos ----");
 		for (Destino destino : destinos) {
 			System.out.println(destino);
@@ -91,7 +88,7 @@ public class MainApp {
 	 */
 
 	private static void listarActividades(GestorJDBC dbManager) throws SQLException {
-		actividades = dbManager.listarActividades();
+		List<Actividad> actividades = dbManager.listarActividades();
 		System.out.println("\n---- Lista de Actividades ----");
 		for (Actividad actividad : actividades) {
 			System.out.println(actividad);
@@ -119,9 +116,8 @@ public class MainApp {
 		String tipo = sc.nextLine();
 		Destino destino = new Destino(nombre, descripcion, region, clima, List.of("Actividades"));
 		dbManager.insertarDestino(destino);
-		destinos = dbManager.listarDestinos();
+		destinos.add(destino);
 		CsvReader.guardarDestinosCsv("destinos.csv", destinos);
-		System.out.println("Destino insertado con éxito.");
 	}
 
 	/**
@@ -146,7 +142,7 @@ public class MainApp {
 
 		Actividad actividad = new Actividad(nombre, tipo, precio, duracion, dificultad);
 		dbManager.insertarActividad(actividad);
-		actividades = dbManager.listarActividades();
+		actividades.add(actividad);
 		CsvReader.guardarActividadesCsv("actividades.csv", actividades);
 		System.out.println("Actividad insertada con éxito.");
 	}
@@ -155,16 +151,21 @@ public class MainApp {
 	 * Metodo para eliminar un destino
 	 * 
 	 * @param dbManager
-	 * @param sc
+	 * @param scanner
 	 * @throws SQLException
 	 */
 
-	private static void eliminarDestino(GestorJDBC dbManager, Scanner sc) throws SQLException {
+	private static void eliminarDestino(GestorJDBC dbManager, Scanner scanner) throws SQLException {
 		System.out.print("Nombre del destino a eliminar: ");
-		String nombre = sc.nextLine();
+		String nombre = scanner.nextLine();
 		if (dbManager.eliminarDestino(nombre)) {
-			destinos = dbManager.listarDestinos();
-			CsvReader.guardarDestinosCsv("destinos.csv", destinos); 
+			for (int i = 0; i < destinos.size(); i++) {
+				if (destinos.get(i).getNombre().equalsIgnoreCase(nombre)) {
+					destinos.remove(i);
+					break;
+				}
+			}
+			CsvReader.guardarDestinosCsv("destinos.csv", destinos);
 			System.out.println("Destino eliminado con éxito.");
 		} else {
 			System.out.println("Destino no encontrado en la base de datos.");
@@ -179,11 +180,16 @@ public class MainApp {
 	 * @throws SQLException
 	 */
 
-	private static void eliminarActividad(GestorJDBC dbManager, Scanner sc) throws SQLException {
+	private static void eliminarActividad(GestorJDBC dbManager, Scanner scanner) throws SQLException {
 		System.out.print("Nombre de la actividad a eliminar: ");
-		String nombre = sc.nextLine();
+		String nombre = scanner.nextLine();
 		if (dbManager.eliminarActividad(nombre)) {
-			actividades = dbManager.listarActividades();
+			for (int i = 0; i < actividades.size(); i++) {
+				if (actividades.get(i).getNombre().equalsIgnoreCase(nombre)) {
+					actividades.remove(i);
+					break;
+				}
+			}
 			CsvReader.guardarActividadesCsv("actividades.csv", actividades);
 			System.out.println("Actividad eliminada con éxito.");
 		} else {
@@ -205,7 +211,12 @@ public class MainApp {
 		System.out.print("Nueva descripción: ");
 		String nuevaDescripcion = sc.nextLine();
 		dbManager.actualizarDestino(nombre, nuevaDescripcion);
-		destinos = dbManager.listarDestinos();
+		for (Destino destino : destinos) {
+			if (destino.getNombre().equalsIgnoreCase(nombre)) {
+				destino.setDescripcion(nuevaDescripcion);
+				break;
+			}
+		}
 		CsvReader.guardarDestinosCsv("destinos.csv", destinos);
 		System.out.println("Destino actualizado con éxito.");
 	}

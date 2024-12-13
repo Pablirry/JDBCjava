@@ -18,9 +18,10 @@ public class GestorJDBC {
 	private static final String PASS = "root";
 
 	private Connection conn;
-	
+
 	/**
 	 * Constructo de la clase para conectar con la base de datos
+	 * 
 	 * @throws SQLException
 	 * @throws ClassNotFoundException
 	 */
@@ -29,9 +30,10 @@ public class GestorJDBC {
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		conn = DriverManager.getConnection(URL, USER, PASS);
 	}
-	
+
 	/**
 	 * Metodo para cerrar conexion
+	 * 
 	 * @throws SQLException
 	 */
 
@@ -40,9 +42,10 @@ public class GestorJDBC {
 			conn.close();
 		}
 	}
-	
+
 	/**
 	 * Metodo para insertar destinos en la base de datos
+	 * 
 	 * @param destino : Destino
 	 * @throws SQLException
 	 */
@@ -58,9 +61,10 @@ public class GestorJDBC {
 			stmt.executeUpdate();
 		}
 	}
-	
+
 	/**
 	 * Metodo para eliminar un destino en la base de datos
+	 * 
 	 * @param nombre : String
 	 * @return : Entero
 	 * @throws SQLException
@@ -75,9 +79,10 @@ public class GestorJDBC {
 			return rowsAffected > 0;
 		}
 	}
-	
+
 	/**
 	 * Metodo para eliminar una actividaden la base de datos
+	 * 
 	 * @param nombre : String
 	 * @return : Entero
 	 * @throws SQLException
@@ -92,10 +97,11 @@ public class GestorJDBC {
 			return rowsAffected > 0;
 		}
 	}
-	
+
 	/**
 	 * Metodo para actualizar un destino en la base de datos
-	 * @param nombre : String
+	 * 
+	 * @param nombre           : String
 	 * @param nuevaDescripcion : String
 	 * @throws SQLException
 	 */
@@ -108,9 +114,10 @@ public class GestorJDBC {
 			stmt.executeUpdate();
 		}
 	}
-	
+
 	/**
 	 * Metodo para listar los destinos que hay en la base de datos
+	 * 
 	 * @return : Destino
 	 * @throws SQLException
 	 */
@@ -127,9 +134,10 @@ public class GestorJDBC {
 		}
 		return destinos;
 	}
-	
+
 	/**
 	 * Metodo para listar las actividades que hay en la base de datos
+	 * 
 	 * @return : Actividad
 	 * @throws SQLException
 	 */
@@ -146,9 +154,11 @@ public class GestorJDBC {
 		}
 		return actividades;
 	}
-	
+
 	/**
-	 * Metodo que lee los archivos de destinos del csv y los introduce a la base de datos
+	 * Metodo que lee los archivos de destinos del csv y los introduce a la base de
+	 * datos
+	 * 
 	 * @param destinosCsv : List
 	 * @throws SQLException
 	 */
@@ -168,9 +178,11 @@ public class GestorJDBC {
 			}
 		}
 	}
-	
+
 	/**
-	 * Metodo que lee los archivos de actividades del csv y los introduce a la base de datos
+	 * Metodo que lee los archivos de actividades del csv y los introduce a la base
+	 * de datos
+	 * 
 	 * @param actividadesCsv : List
 	 * @throws SQLException
 	 */
@@ -190,9 +202,10 @@ public class GestorJDBC {
 			}
 		}
 	}
-	
+
 	/**
 	 * Metodo para insertar una nueva actividad en la base de datos
+	 * 
 	 * @param actividad : Actividad
 	 * @throws SQLException
 	 */
@@ -207,9 +220,10 @@ public class GestorJDBC {
 			stmt.executeUpdate();
 		}
 	}
-	
+
 	/**
 	 * Metodo para resetear el id
+	 * 
 	 * @param tableName : String
 	 * @throws SQLException
 	 */

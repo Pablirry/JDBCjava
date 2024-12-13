@@ -98,7 +98,7 @@ public class Destino implements Mostrable{
 
 	@Override
 	public String toString() {
-		 return "Destino: " + nombre + "(" + tipo + ")" + "\nDescripción: " + descripcion + "\nRegión: " + region + "\nClima: " + clima + "\n";
+		 return "Destino: " + nombre + "(" + tipo + ")" + "\n\tDescripción: " + descripcion + "\n\tRegión: " + region + "\n\tClima: " + clima + "\n";
 	}
 	
 	/**

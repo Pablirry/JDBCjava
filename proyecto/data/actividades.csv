@@ -1,11 +1,7 @@
 Tipo;Nombre;Precio;Duración;Nivel de Dificultad
-aventura;Rafting en el Sella;45.00;2;Moderado
-cultural;Tour histórico de Oviedo;20.00;3;Fácil
-relax;Spa en Gijón;70.00;2;Fácil
-aventura;Escalada en Picos de Europa;60.00;4;Difícil
-gastronomía;Ruta de sidrerías en Villaviciosa;30.00;3;Fácil
-cultural;Museo del Jurásico;15.00;1;Fácil
-aventura;Parapente en Llanes;80.00;1;Avanzado
-cultural;Visita a la Catedral de Oviedo;10.00;1;Fácil
-relax;Paseo en velero por la costa asturiana;50.00;3;Moderado
-gastronomía;Cata de quesos en Cabrales;25.00;2;Fácil
+Aventura;Escalada en roca;50,00;3;Alta
+Cultural;Visita al museo del Prado;20,00;2;Baja
+Aventura;Rafting en el rio;40,00;4;Alta
+Cultural;Recorrido historico por la ciudad;15,00;2;Baja
+Aventura;Senderismo en los Picos de Europa;30,00;5;Media
+Cultural;Tour gastronomico en Barcelona;50,00;3;Baja
