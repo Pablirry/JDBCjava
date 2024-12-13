@@ -8,12 +8,15 @@ import Exceptions.ArchivoNoEncontradoException;
 import Model.*;
 import Persistence.CsvReader;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class JUnit_Persistencia {
 	
