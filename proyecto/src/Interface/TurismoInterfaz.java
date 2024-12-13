@@ -17,21 +17,22 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
 public class TurismoInterfaz {
-	
-	private static final String DB_URL = "jdbc:mysql://localhost:3306/turismo";
-    private static final String DB_DRIVER = "com.mysql.cj.jdbc.Driver";
-    
-	private JFrame frame;
-	private JTable tableDestinos;
-	private JTable tableActividades;
-	private DefaultTableModel modelDestinos;
-	private DefaultTableModel modelActividades;
-	private GestorJDBC dbManager;
 
-	public TurismoInterfaz() {
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/turismo";
+    private static final String DB_DRIVER = "com.mysql.cj.jdbc.Driver";
+
+    private JFrame frame;
+    private JTable tableDestinos;
+    private JTable tableActividades;
+    private DefaultTableModel modelDestinos;
+    private DefaultTableModel modelActividades;
+    private GestorJDBC dbManager;
+
+    public TurismoInterfaz() {
         try {
-            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");	
             dbManager = new GestorJDBC();
+            UIManager.put("Button.arc", 10);
             initialize();
         } catch (Exception e) {
             e.printStackTrace();
@@ -78,6 +79,8 @@ public class TurismoInterfaz {
         JButton btnLogin = new JButton("Iniciar Sesión");
         btnLogin.setBackground(new Color(70, 130, 180));
         btnLogin.setForeground(Color.WHITE);
+        btnLogin.setFont(new Font("Arial", Font.PLAIN, 14));
+        btnLogin.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
         gbc.gridx = 1;
         gbc.gridy = 2;
         loginPanel.add(btnLogin, gbc);
@@ -96,7 +99,8 @@ public class TurismoInterfaz {
                 loginPanel.setVisible(false);
                 mostrarInterfazDeGestion();
             } else {
-                JOptionPane.showMessageDialog(frame, "Usuario o contraseña incorrectos", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(frame, "Usuario o contraseña incorrectos", "Error",
+                        JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -121,7 +125,8 @@ public class TurismoInterfaz {
             String password = new String(passwordField.getPassword());
 
             if (usuario.isEmpty() || password.isEmpty()) {
-                JOptionPane.showMessageDialog(frame, "Los campos no pueden estar vacíos.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(frame, "Los campos no pueden estar vacíos.", "Error",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -140,7 +145,8 @@ public class TurismoInterfaz {
                     ResultSet rs = checkStmt.executeQuery();
 
                     if (rs.next()) {
-                        JOptionPane.showMessageDialog(frame, "El usuario ya existe. Intente con otro nombre de usuario.",
+                        JOptionPane.showMessageDialog(frame,
+                                "El usuario ya existe. Intente con otro nombre de usuario.",
                                 "Error", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
@@ -154,7 +160,8 @@ public class TurismoInterfaz {
                     stmt.setString(2, hashedPassword);
                     stmt.executeUpdate();
 
-                    JOptionPane.showMessageDialog(frame, "Usuario registrado con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, "Usuario registrado con éxito.", "Éxito",
+                            JOptionPane.INFORMATION_MESSAGE);
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -162,7 +169,8 @@ public class TurismoInterfaz {
             }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(frame, "Driver de base de datos no encontrado.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(frame, "Driver de base de datos no encontrado.", "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -201,11 +209,13 @@ public class TurismoInterfaz {
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
-                JOptionPane.showMessageDialog(frame, "Error de conexión a la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(frame, "Error de conexión a la base de datos.", "Error",
+                        JOptionPane.ERROR_MESSAGE);
             }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(frame, "Driver de base de datos no encontrado.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(frame, "Driver de base de datos no encontrado.", "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
         return false;
     }
@@ -255,7 +265,7 @@ public class TurismoInterfaz {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        modelDestinos = new DefaultTableModel(new String[]{"Nombre", "Descripción", "Región", "Clima"}, 0);
+        modelDestinos = new DefaultTableModel(new String[] { "Nombre", "Descripción", "Región", "Clima" }, 0);
         tableDestinos = new JTable(modelDestinos);
 
         // Add sorting functionality
@@ -291,7 +301,8 @@ public class TurismoInterfaz {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        modelActividades = new DefaultTableModel(new String[]{"Nombre", "Tipo", "Precio", "Duración", "Dificultad"}, 0);
+        modelActividades = new DefaultTableModel(new String[] { "Nombre", "Tipo", "Precio", "Duración", "Dificultad" },
+                0);
         tableActividades = new JTable(modelActividades);
 
         // Add sorting functionality
@@ -335,7 +346,8 @@ public class TurismoInterfaz {
     }
 
     private void mostrarAcercaDe() {
-        JOptionPane.showMessageDialog(frame, "Gestión de Turismo v1.0\nDesarrollado por Pablo", "Acerca de", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(frame, "Gestión de Turismo v1.0\nDesarrollado por Pablo", "Acerca de",
+                JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void cargarDatos() {
@@ -343,129 +355,132 @@ public class TurismoInterfaz {
             List<Destino> destinos = dbManager.listarDestinos();
             modelDestinos.setRowCount(0);
             for (Destino destino : destinos) {
-                modelDestinos.addRow(new Object[]{destino.getNombre(), destino.getDescripcion(), destino.getRegion(), destino.getClima()});
+                modelDestinos.addRow(new Object[] { destino.getNombre(), destino.getDescripcion(), destino.getRegion(),
+                        destino.getClima() });
             }
 
             List<Actividad> actividades = dbManager.listarActividades();
             modelActividades.setRowCount(0);
             for (Actividad actividad : actividades) {
-                modelActividades.addRow(new Object[]{actividad.getNombre(), actividad.getTipo(), actividad.getPrecio(), actividad.getDuracion(), actividad.getDificultad()});
+                modelActividades.addRow(new Object[] { actividad.getNombre(), actividad.getTipo(),
+                        actividad.getPrecio(), actividad.getDuracion(), actividad.getDificultad() });
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(frame, "Error al cargar datos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(frame, "Error al cargar datos: " + e.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
-	private void filtrarDestinos(String filtro) {
-		try {
-			List<Destino> destinos = dbManager.listarDestinos();
-			modelDestinos.setRowCount(0);
-			for (Destino destino : destinos) {
-				if (destino.getNombre().toLowerCase().contains(filtro.toLowerCase())
-						|| destino.getRegion().toLowerCase().contains(filtro.toLowerCase())) {
-					modelDestinos.addRow(new Object[] { destino.getNombre(), destino.getDescripcion(),
-							destino.getRegion(), destino.getClima() });
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
+    private void filtrarDestinos(String filtro) {
+        try {
+            List<Destino> destinos = dbManager.listarDestinos();
+            modelDestinos.setRowCount(0);
+            for (Destino destino : destinos) {
+                if (destino.getNombre().toLowerCase().contains(filtro.toLowerCase())
+                        || destino.getRegion().toLowerCase().contains(filtro.toLowerCase())) {
+                    modelDestinos.addRow(new Object[] { destino.getNombre(), destino.getDescripcion(),
+                            destino.getRegion(), destino.getClima() });
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
-	private void filtrarActividades(String filtro) {
-		try {
-			List<Actividad> actividades = dbManager.listarActividades();
-			modelActividades.setRowCount(0);
-			for (Actividad actividad : actividades) {
-				if (actividad.getNombre().toLowerCase().contains(filtro.toLowerCase())
-						|| actividad.getTipo().toLowerCase().contains(filtro.toLowerCase())) {
-					modelActividades.addRow(new Object[] { actividad.getNombre(), actividad.getTipo(),
-							actividad.getPrecio(), actividad.getDuracion(), actividad.getDificultad() });
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
+    private void filtrarActividades(String filtro) {
+        try {
+            List<Actividad> actividades = dbManager.listarActividades();
+            modelActividades.setRowCount(0);
+            for (Actividad actividad : actividades) {
+                if (actividad.getNombre().toLowerCase().contains(filtro.toLowerCase())
+                        || actividad.getTipo().toLowerCase().contains(filtro.toLowerCase())) {
+                    modelActividades.addRow(new Object[] { actividad.getNombre(), actividad.getTipo(),
+                            actividad.getPrecio(), actividad.getDuracion(), actividad.getDificultad() });
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
-	private void agregarDestino() {
-		JTextField nombreField = new JTextField();
-		JTextField descripcionField = new JTextField();
-		JTextField regionField = new JTextField();
-		JTextField climaField = new JTextField();
+    private void agregarDestino() {
+        JTextField nombreField = new JTextField();
+        JTextField descripcionField = new JTextField();
+        JTextField regionField = new JTextField();
+        JTextField climaField = new JTextField();
 
-		Object[] fields = { "Nombre:", nombreField, "Descripción:", descripcionField, "Región:", regionField, "Clima:",
-				climaField };
+        Object[] fields = { "Nombre:", nombreField, "Descripción:", descripcionField, "Región:", regionField, "Clima:",
+                climaField };
 
-		int option = JOptionPane.showConfirmDialog(frame, fields, "Agregar Destino", JOptionPane.OK_CANCEL_OPTION);
-		if (option == JOptionPane.OK_OPTION) {
-			try {
-				Destino destino = new Destino(nombreField.getText(), descripcionField.getText(), regionField.getText(),
-						climaField.getText(), List.of());
-				dbManager.insertarDestino(destino);
-				cargarDatos();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+        int option = JOptionPane.showConfirmDialog(frame, fields, "Agregar Destino", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
+            try {
+                Destino destino = new Destino(nombreField.getText(), descripcionField.getText(), regionField.getText(),
+                        climaField.getText(), List.of());
+                dbManager.insertarDestino(destino);
+                cargarDatos();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-	private void eliminarDestino() {
-		int selectedRow = tableDestinos.getSelectedRow();
-		if (selectedRow >= 0) {
-			String nombre = (String) modelDestinos.getValueAt(selectedRow, 0);
-			try {
-				dbManager.eliminarDestino(nombre);
-				cargarDatos();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		} else {
-			JOptionPane.showMessageDialog(frame, "Seleccione un destino para eliminar.");
-		}
-	}
+    private void eliminarDestino() {
+        int selectedRow = tableDestinos.getSelectedRow();
+        if (selectedRow >= 0) {
+            String nombre = (String) modelDestinos.getValueAt(selectedRow, 0);
+            try {
+                dbManager.eliminarDestino(nombre);
+                cargarDatos();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } else {
+            JOptionPane.showMessageDialog(frame, "Seleccione un destino para eliminar.");
+        }
+    }
 
-	private void agregarActividad() {
-		JTextField nombreField = new JTextField();
-		JTextField tipoField = new JTextField();
-		JTextField precioField = new JTextField();
-		JTextField duracionField = new JTextField();
-		JTextField dificultadField = new JTextField();
+    private void agregarActividad() {
+        JTextField nombreField = new JTextField();
+        JTextField tipoField = new JTextField();
+        JTextField precioField = new JTextField();
+        JTextField duracionField = new JTextField();
+        JTextField dificultadField = new JTextField();
 
-		Object[] fields = { "Nombre:", nombreField, "Tipo:", tipoField, "Precio:", precioField, "Duración:",
-				duracionField, "Dificultad:", dificultadField };
+        Object[] fields = { "Nombre:", nombreField, "Tipo:", tipoField, "Precio:", precioField, "Duración:",
+                duracionField, "Dificultad:", dificultadField };
 
-		int option = JOptionPane.showConfirmDialog(frame, fields, "Agregar Actividad", JOptionPane.OK_CANCEL_OPTION);
-		if (option == JOptionPane.OK_OPTION) {
-			try {
-				Actividad actividad = new Actividad(nombreField.getText(), tipoField.getText(),
-						Double.parseDouble(precioField.getText()), Integer.parseInt(duracionField.getText()),
-						dificultadField.getText());
-				dbManager.insertarActividad(actividad);
-				cargarDatos();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+        int option = JOptionPane.showConfirmDialog(frame, fields, "Agregar Actividad", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
+            try {
+                Actividad actividad = new Actividad(nombreField.getText(), tipoField.getText(),
+                        Double.parseDouble(precioField.getText()), Integer.parseInt(duracionField.getText()),
+                        dificultadField.getText());
+                dbManager.insertarActividad(actividad);
+                cargarDatos();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-	private void eliminarActividad() {
-		int selectedRow = tableActividades.getSelectedRow();
-		if (selectedRow >= 0) {
-			String nombre = (String) modelActividades.getValueAt(selectedRow, 0);
-			try {
-				dbManager.eliminarActividad(nombre);
-				cargarDatos();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		} else {
-			JOptionPane.showMessageDialog(frame, "Seleccione una actividad para eliminar.");
-		}
-	}
+    private void eliminarActividad() {
+        int selectedRow = tableActividades.getSelectedRow();
+        if (selectedRow >= 0) {
+            String nombre = (String) modelActividades.getValueAt(selectedRow, 0);
+            try {
+                dbManager.eliminarActividad(nombre);
+                cargarDatos();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } else {
+            JOptionPane.showMessageDialog(frame, "Seleccione una actividad para eliminar.");
+        }
+    }
 
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(TurismoInterfaz::new);
-	}
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(TurismoInterfaz::new);
+    }
 
 }
