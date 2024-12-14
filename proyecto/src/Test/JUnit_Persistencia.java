@@ -85,8 +85,8 @@ public class JUnit_Persistencia {
     @Test
     void testGuardarDestinosCsv(@TempDir Path tempDir) throws Exception {
 
-        destinos.add(new DestinoUrbano("Madrid", "Capital de España", "Centro", "Templado", List.of("Museos", "Visita al centro"), 5));
-        destinos.add(new DestinoNatural("Amazonas", "Selva tropical", "América del Sur", "Húmedo", List.of("Senderismo", "Montañismo"), 250.0));
+        destinos.add(new DestinoUrbano("Madrid", "Capital de España", "Centro", "Templado","urbano", List.of("Museos", "Visita al centro"), 5));
+        destinos.add(new DestinoNatural("Amazonas", "Selva tropical", "América del Sur", "Húmedo","natural", List.of("Senderismo", "Montañismo"), 250.0));
 
 
         File archivoCsv = tempDir.resolve("guardar_destinos.csv").toFile();

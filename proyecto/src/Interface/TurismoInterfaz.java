@@ -1,6 +1,7 @@
 package Interface;
 
 import Model.*;
+import Persistence.CsvReader;
 import Persistence.GestorJDBC;
 import java.awt.*;
 import java.nio.charset.StandardCharsets;
@@ -11,6 +12,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -18,7 +20,7 @@ import javax.swing.table.TableRowSorter;
 
 public class TurismoInterfaz {
 
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/turismo";
+	private static final String DB_URL = "jdbc:mysql://localhost:3306/turismo";
     private static final String DB_DRIVER = "com.mysql.cj.jdbc.Driver";
 
     private JFrame frame;
@@ -33,7 +35,11 @@ public class TurismoInterfaz {
             UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");	
             dbManager = new GestorJDBC();
             UIManager.put("Button.arc", 10);
+            
+            
             initialize();
+            
+            sincronizarDatosConCsv();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -265,10 +271,9 @@ public class TurismoInterfaz {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        modelDestinos = new DefaultTableModel(new String[] { "Nombre", "Descripción", "Región", "Clima" }, 0);
+        modelDestinos = new DefaultTableModel(new String[] { "Nombre", "Descripción", "Región", "Clima", "Tipo" }, 0);
         tableDestinos = new JTable(modelDestinos);
 
-        // Add sorting functionality
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(modelDestinos);
         tableDestinos.setRowSorter(sorter);
 
@@ -281,16 +286,19 @@ public class TurismoInterfaz {
         JButton btnFiltrar = createStyledButton("Filtrar", "filter");
         JButton btnAgregar = createStyledButton("Agregar", "add");
         JButton btnEliminar = createStyledButton("Eliminar", "delete");
+        JButton btnEditar = createStyledButton("Editar", "edit");
 
         panelBotones.add(new JLabel("Filtro:"));
         panelBotones.add(filtroField);
         panelBotones.add(btnFiltrar);
         panelBotones.add(btnAgregar);
         panelBotones.add(btnEliminar);
+        panelBotones.add(btnEditar);
 
         btnFiltrar.addActionListener(e -> filtrarDestinos(filtroField.getText()));
         btnAgregar.addActionListener(e -> agregarDestino());
         btnEliminar.addActionListener(e -> eliminarDestino());
+        btnEditar.addActionListener(e -> editarDestino());
 
         panel.add(panelBotones, BorderLayout.SOUTH);
 
@@ -305,7 +313,6 @@ public class TurismoInterfaz {
                 0);
         tableActividades = new JTable(modelActividades);
 
-        // Add sorting functionality
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(modelActividades);
         tableActividades.setRowSorter(sorter);
 
@@ -318,16 +325,20 @@ public class TurismoInterfaz {
         JButton btnFiltrar = createStyledButton("Filtrar", "filter");
         JButton btnAgregar = createStyledButton("Agregar", "add");
         JButton btnEliminar = createStyledButton("Eliminar", "delete");
+        JButton btnEditar = createStyledButton("Editar", "edit");
 
         panelBotones.add(new JLabel("Filtro:"));
         panelBotones.add(filtroField);
         panelBotones.add(btnFiltrar);
         panelBotones.add(btnAgregar);
         panelBotones.add(btnEliminar);
+        panelBotones.add(btnEditar);
 
         btnFiltrar.addActionListener(e -> filtrarActividades(filtroField.getText()));
         btnAgregar.addActionListener(e -> agregarActividad());
         btnEliminar.addActionListener(e -> eliminarActividad());
+        btnEditar.addActionListener(e -> editarActividad());
+        
 
         panel.add(panelBotones, BorderLayout.SOUTH);
 
@@ -351,23 +362,35 @@ public class TurismoInterfaz {
     }
 
     private void cargarDatos() {
-        try {
+    	try {
             List<Destino> destinos = dbManager.listarDestinos();
             modelDestinos.setRowCount(0);
             for (Destino destino : destinos) {
-                modelDestinos.addRow(new Object[] { destino.getNombre(), destino.getDescripcion(), destino.getRegion(),
-                        destino.getClima() });
+                modelDestinos.addRow(new Object[] {
+                    destino.getNombre(),
+                    destino.getDescripcion(),
+                    destino.getRegion(),
+                    destino.getClima(),
+                    destino.getTipo()
+                });
             }
 
             List<Actividad> actividades = dbManager.listarActividades();
             modelActividades.setRowCount(0);
             for (Actividad actividad : actividades) {
-                modelActividades.addRow(new Object[] { actividad.getNombre(), actividad.getTipo(),
-                        actividad.getPrecio(), actividad.getDuracion(), actividad.getDificultad() });
+                modelActividades.addRow(new Object[] {
+                    actividad.getTipo(),
+                    actividad.getNombre(),
+                    actividad.getPrecio(),
+                    actividad.getDuracion(),
+                    actividad.getDificultad()
+                });
             }
+
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(frame, "Error al cargar datos: " + e.getMessage(), "Error",
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(
+                frame, "Error al cargar datos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE
+            );
         }
     }
 
@@ -404,19 +427,31 @@ public class TurismoInterfaz {
     }
 
     private void agregarDestino() {
-        JTextField nombreField = new JTextField();
+    	JTextField nombreField = new JTextField();
         JTextField descripcionField = new JTextField();
         JTextField regionField = new JTextField();
         JTextField climaField = new JTextField();
+        JTextField tipoField = new JTextField();
 
-        Object[] fields = { "Nombre:", nombreField, "Descripción:", descripcionField, "Región:", regionField, "Clima:",
-                climaField };
+        Object[] fields = {
+            "Nombre:", nombreField,
+            "Descripción:", descripcionField,
+            "Región:", regionField,
+            "Clima:", climaField,
+            "Tipo:", tipoField
+        };
 
         int option = JOptionPane.showConfirmDialog(frame, fields, "Agregar Destino", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
             try {
-                Destino destino = new Destino(nombreField.getText(), descripcionField.getText(), regionField.getText(),
-                        climaField.getText(), List.of());
+                Destino destino = new Destino(
+                    nombreField.getText(),
+                    descripcionField.getText(),
+                    regionField.getText(),
+                    climaField.getText(),
+                    tipoField.getText(),
+                    new ArrayList<>()
+                );
                 dbManager.insertarDestino(destino);
                 cargarDatos();
             } catch (SQLException e) {
@@ -426,17 +461,19 @@ public class TurismoInterfaz {
     }
 
     private void eliminarDestino() {
-        int selectedRow = tableDestinos.getSelectedRow();
+    	int selectedRow = tableDestinos.getSelectedRow();
         if (selectedRow >= 0) {
             String nombre = (String) modelDestinos.getValueAt(selectedRow, 0);
             try {
                 dbManager.eliminarDestino(nombre);
                 cargarDatos();
+                JOptionPane.showMessageDialog(frame, "Destino eliminado con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             } catch (SQLException e) {
                 e.printStackTrace();
+                JOptionPane.showMessageDialog(frame, "Error al eliminar el destino: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         } else {
-            JOptionPane.showMessageDialog(frame, "Seleccione un destino para eliminar.");
+            JOptionPane.showMessageDialog(frame, "Seleccione un destino para eliminar.", "Advertencia", JOptionPane.WARNING_MESSAGE);
         }
     }
 
@@ -465,22 +502,144 @@ public class TurismoInterfaz {
     }
 
     private void eliminarActividad() {
-        int selectedRow = tableActividades.getSelectedRow();
-        if (selectedRow >= 0) {
-            String nombre = (String) modelActividades.getValueAt(selectedRow, 0);
-            try {
-                dbManager.eliminarActividad(nombre);
-                cargarDatos();
-            } catch (SQLException e) {
-                e.printStackTrace();
+    	int selectedRow = tableActividades.getSelectedRow();
+        if (selectedRow < 0 || selectedRow >= modelActividades.getRowCount()) {
+            JOptionPane.showMessageDialog(frame, "Seleccione una actividad válida para eliminar.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String nombre = (String) modelActividades.getValueAt(selectedRow, 0);
+        try {
+            dbManager.eliminarActividad(nombre);
+            cargarDatos();
+            JOptionPane.showMessageDialog(frame, "Actividad eliminada con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(frame, "Error al eliminar la actividad: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    private void editarDestino() {
+    	int select = tableDestinos.getSelectedRow();
+        if (select >= 0) {
+            String nombre = (String) modelDestinos.getValueAt(select, 0);
+            String descripcion = (String) modelDestinos.getValueAt(select, 1);
+            String region = (String) modelDestinos.getValueAt(select, 2);
+            String clima = (String) modelDestinos.getValueAt(select, 3);
+            String tipo = (String) modelDestinos.getValueAt(select, 4);
+
+            JTextField nombreField = new JTextField(nombre);
+            JTextField descripcionField = new JTextField(descripcion);
+            JTextField regionField = new JTextField(region);
+            JTextField climaField = new JTextField(clima);
+            JTextField tipoField = new JTextField(tipo);
+
+            Object[] filas = {
+                "Nombre:", nombreField,
+                "Descripción:", descripcionField,
+                "Región:", regionField,
+                "Clima:", climaField,
+                "Tipo:", tipoField
+            };
+
+            int option = JOptionPane.showConfirmDialog(frame, filas, "Editar Destino", JOptionPane.OK_CANCEL_OPTION);
+            if (option == JOptionPane.OK_OPTION) {
+                try {
+                    Destino destinoEditado = new Destino(
+                        nombreField.getText(),
+                        descripcionField.getText(),
+                        regionField.getText(),
+                        climaField.getText(),
+                        tipoField.getText(),
+                        new ArrayList<>()
+                    );
+
+                    dbManager.actualizarDestino(nombre, destinoEditado);
+                    cargarDatos();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(frame, "Error al editar el destino.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         } else {
-            JOptionPane.showMessageDialog(frame, "Seleccione una actividad para eliminar.");
+            JOptionPane.showMessageDialog(frame, "Seleccione un destino para editar.");
         }
+    }
+    
+    private void editarActividad() {
+        int select = tableActividades.getSelectedRow();
+        if (select >= 0) {
+
+            String nombre = (String) modelActividades.getValueAt(select, 0);
+            String tipo = (String) modelActividades.getValueAt(select, 1);
+            String precio = modelActividades.getValueAt(select, 2).toString();
+            String duracion = modelActividades.getValueAt(select, 3).toString();
+            String dificultad = (String) modelActividades.getValueAt(select, 4);
+
+            JTextField nombreField = new JTextField(nombre);
+            JTextField tipoField = new JTextField(tipo);
+            JTextField precioField = new JTextField(precio);
+            JTextField duracionField = new JTextField(duracion);
+            JTextField dificultadField = new JTextField(dificultad);
+
+            Object[] filas = {
+                "Nombre:", nombreField,
+                "Tipo:", tipoField,
+                "Precio:", precioField,
+                "Duración:", duracionField,
+                "Dificultad:", dificultadField
+            };
+
+            int option = JOptionPane.showConfirmDialog(frame, filas, "Editar Actividad", JOptionPane.OK_CANCEL_OPTION);
+            if (option == JOptionPane.OK_OPTION) {
+                try {
+                    Actividad actividadEditada = new Actividad(
+                        nombreField.getText(),
+                        tipoField.getText(),
+                        Double.parseDouble(precioField.getText()),
+                        Integer.parseInt(duracionField.getText()),
+                        dificultadField.getText()
+                    );
+
+                    dbManager.actualizarActividad(nombre, actividadEditada);
+
+                    cargarDatos();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(frame, "Error al editar la actividad.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(frame, "Seleccione una actividad para editar.");
+        }
+    }
+    
+    private void sincronizarDatosConCsv() {
+    	 try {
+    	        List<Destino> destinosCsv = CsvReader.cargarDestinosCsv("destinos.csv", new ArrayList<>());
+    	        List<Actividad> actividadesCsv = CsvReader.cargarActividadesCsv("actividades.csv", new ArrayList<>());
+
+    	        System.out.println("Sincronizando datos con los CSV...");
+
+    	        dbManager.sincronizarDestinosDesdeCsv(destinosCsv);
+    	        dbManager.sincronizarActividadesDesdeCsv(actividadesCsv);
+
+    	        if (modelDestinos != null && modelActividades != null) {
+    	            cargarDatos();
+    	        }
+    	        System.out.println("Sincronización completada.");
+    	    } catch (Exception e) {
+    	        e.printStackTrace();
+    	        JOptionPane.showMessageDialog(
+    	            frame, "Error al sincronizar datos con los CSV: " + e.getMessage(),
+    	            "Error", JOptionPane.ERROR_MESSAGE
+    	        );
+    	    }
     }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(TurismoInterfaz::new);
     }
+
 
 }

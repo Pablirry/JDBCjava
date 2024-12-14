@@ -1,7 +1,8 @@
-Tipo;Nombre;Descripción;Región;Clima
-null;Madrid;Capital de Espana, conocida por su cultura y arquitectura;Centro;Templado
-null;Parque Nacional del Teide;Zona volcanica con senderos y paisajes unicos;Islas Canarias;Calido
-null;Barcelona;Ciudad costera con famosos puntos de interes como la Sagrada Familia;Cataluna;Mediterraneo
-null;Parque Natural de la Sierra de Grazalema;Montanas y senderos con vistas panoramicas;Andalucia;Humedo
-null;Sevilla;Famosa por su catedral y flamenco;Andalucia;Calido
-null;Parque Nacional de los Picos de Europa;Montanas escarpadas ideales para senderismo;Asturias;Fresco
+Nombre;Descripción;Región;Clima;Tipo
+Natural;Parque Nacional del Teide;Zona volcanica con senderos y paisajes unicos;Islas Canarias;Calido
+Urbano;Barcelona;Ciudad costera con famosos puntos de interes como la Sagrada Familia;Cataluna;Mediterraneo
+Natural;Sahara;El desierto caliente mas grande del mundo;Africa del Norte;Arido
+Urbano;Londres;Ciudad historica conocida por el Big Ben y el Palacio de Buckingham;Londres;Frio
+Natural;Bali;Un paraiso tropical famoso por sus playas y templos;Indonesia;Calido
+Urbano;Tokio;Una ciudad vibrante con una mezcla de tradicion y tecnologia;Kanto;Templado
+Urbano;Nueva York;La ciudad que nunca duerme con su iconico Times Square;Noreste;Frio

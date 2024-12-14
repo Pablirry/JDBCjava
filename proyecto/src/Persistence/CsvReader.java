@@ -22,29 +22,40 @@ public class CsvReader {
 	public static List<Destino> cargarDestinosCsv(String archivo, List<Destino> destinos)
 			throws ArchivoNoEncontradoException {
 
-		try (BufferedReader br = new BufferedReader(new FileReader(DATA + archivo))) {
-			String linea;
-			while ((linea = br.readLine()) != null) {
-				String[] datos = linea.split(";");
-				String tipoDestino = datos[0];
-				String nombre = datos[1];
-				String descripcion = datos[2];
-				String region = datos[3];
-				String clima = datos[4];
+		File file = new File(DATA + archivo);
+	    if (!file.exists()) {
+	        System.out.println("Archivo " + archivo + " no encontrado, iniciando vacío.");
+	        return destinos;
+	    }
 
-				if (tipoDestino.equalsIgnoreCase("urbano")) {
-					destinos.add(new DestinoUrbano(nombre, descripcion, region, clima,
-							List.of("Museos", "Visita al centro"), 5));
-				} else if (tipoDestino.equalsIgnoreCase("natural")) {
-					destinos.add(new DestinoNatural(nombre, descripcion, region, clima,
-							List.of("Senderismo", "Montañismo"), 250.0));
-				}
-			}
-		} catch (IOException e) {
-			throw new ArchivoNoEncontradoException("Error al leer el archivo");
+	    try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"))) {
+	        String linea;
+	        boolean primeraLinea = true;
+	        while ((linea = br.readLine()) != null) {
+	            if (primeraLinea) {
+	                primeraLinea = false;
+	                continue;
+	            }
+	            
+	            linea = linea.trim();
+	            String[] datos = linea.split(";");
+	            if (datos.length < 5) {
+	                System.out.println("Línea inválida en el CSV: " + linea);
+	                continue;
+	            }
 
-		}
-		return destinos;
+	            String nombre = datos[0].trim();
+	            String descripcion = datos[1].trim();
+	            String region = datos[2].trim();
+	            String clima = datos[3].trim();
+	            String tipo = datos[4].trim();
+
+	            destinos.add(new Destino(nombre, descripcion, region, clima, tipo, List.of()));
+	        }
+	    } catch (IOException e) {
+	        throw new ArchivoNoEncontradoException("Error al leer el archivo");
+	    }
+	    return destinos;
 	}
 
 	/**
@@ -61,14 +72,13 @@ public class CsvReader {
 	    try (BufferedReader br = new BufferedReader(new FileReader(DATA + archivo))) {
 	        String linea;
 
-	        br.readLine();  // Para omitir la primera línea (cabeceras)
+	        br.readLine(); 
 
 	        while ((linea = br.readLine()) != null) {
 	            String[] datos = linea.split(";");
 	            String tipoActividad = datos[0];
 	            String nombre = datos[1];
 	            
-	            // Reemplazar la coma por punto en el precio
 	            String precioString = datos[2].replace(",", ".");
 	            double precio = Double.parseDouble(precioString);
 	            
@@ -118,15 +128,15 @@ public class CsvReader {
 
 	public static void guardarDestinosCsv(String archivo, List<Destino> destinos) {
 		try (PrintWriter pw = new PrintWriter(new FileWriter(DATA + archivo))) {
-
-			pw.println("Tipo;Nombre;Descripción;Región;Clima");
-
-			for (Destino destino : destinos) {
-				pw.printf("%s;%s;%s;%s;%s%n", destino.getTipo(), destino.getNombre(), destino.getDescripcion(),
-						destino.getRegion(), destino.getClima());
-			}
-		} catch (IOException e) {
-			System.out.println("Error al guardar destino");
-		}
+	        pw.println("Nombre;Descripción;Región;Clima;Tipo");
+	        for (Destino destino : destinos) {
+	            pw.printf("%s;%s;%s;%s;%s%n",
+	                      destino.getTipo(), destino.getNombre(), destino.getDescripcion(),
+	                      destino.getRegion(), destino.getClima());
+	        }
+	    } catch (IOException e) {
+	        System.out.println("Error al guardar destinos en el archivo CSV");
+	    }
 	}
+
 }

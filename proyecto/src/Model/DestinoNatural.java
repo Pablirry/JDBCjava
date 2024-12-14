@@ -16,9 +16,9 @@ public class DestinoNatural extends Destino{
 	 * @param areaProtegida : real
 	 */
 	
-	public DestinoNatural(String nombre, String descripcion, String region, String clima,
+	public DestinoNatural(String nombre, String descripcion, String region, String clima, String tipo,
 			List<String> actividadesRecomendadas, double areaProtegida) {
-		super(nombre, descripcion, region, clima, actividadesRecomendadas);
+		super(nombre, descripcion, region, clima, tipo, actividadesRecomendadas);
 		this.areaProtegida = areaProtegida;
 	}
 	

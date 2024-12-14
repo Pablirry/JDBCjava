@@ -1,7 +1,10 @@
 Tipo;Nombre;Precio;Duración;Nivel de Dificultad
-Aventura;Escalada en roca;50,00;3;Alta
-Cultural;Visita al museo del Prado;20,00;2;Baja
-Aventura;Rafting en el rio;40,00;4;Alta
-Cultural;Recorrido historico por la ciudad;15,00;2;Baja
-Aventura;Senderismo en los Picos de Europa;30,00;5;Media
-Cultural;Tour gastronomico en Barcelona;50,00;3;Baja
+Cultural;Museo de Historia;15,00;2;Baja
+Aventura;Escalada en roca;30,00;4;Alta
+Aventura;Rafting en rio;40,00;3;Alta
+Cultural;Recorrido por castillos;35,00;5;Baja
+Aventura;Parapente;60,00;1;Alta
+Cultural;Tour arqueologico;40,00;4;Baja
+Aventura;Buceo en arrecife;70,00;2;Alta
+Cultural;Teatro al aire libre;12,00;2;Baja
+Aventura;Safari en jeeps;80,00;4;Media
