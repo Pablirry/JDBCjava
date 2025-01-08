@@ -6,7 +6,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="D:/Escritorio/DAM_AFA/2-DAM-1/Acceso a datos/1 Ev/Tema 3/Actividades/mysql-connector-j-8.2.0.jar">
+	<classpathentry kind="lib" path="d:/Escritorio/DAM_AFA/2-DAM-1/Acceso a datos/1 Ev/Tema 3/Actividades/mysql-connector-j-8.2.0.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>

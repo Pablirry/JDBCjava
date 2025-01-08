@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="Controllers.ResenasController">
+    <children>
+        <!-- Encabezado -->
+        <Label text="Reseñas de Restaurantes" layoutX="250" layoutY="20" style="-fx-font-size: 24; -fx-text-fill: white;" />
+
+        <!-- Lista de reseñas -->
+        <ListView fx:id="reseñasList" layoutX="50" layoutY="70" prefWidth="700" prefHeight="300" />
+
+        <!-- Campos para agregar nueva reseña -->
+        <Label text="Escribe tu reseña:" layoutX="50" layoutY="400" />
+        <TextArea fx:id="reseñaInput" layoutX="50" layoutY="420" prefWidth="500" prefHeight="50" />
+
+        <!-- Selector de estrellas -->
+        <Label text="Puntuación:" layoutX="50" layoutY="480" />
+        <HBox spacing="5" layoutX="150" layoutY="480">
+            <ToggleButton text="★" fx:id="star1" onAction="#selectStar" />
+            <ToggleButton text="★" fx:id="star2" onAction="#selectStar" />
+            <ToggleButton text="★" fx:id="star3" onAction="#selectStar" />
+            <ToggleButton text="★" fx:id="star4" onAction="#selectStar" />
+            <ToggleButton text="★" fx:id="star5" onAction="#selectStar" />
+        </HBox>
+
+        <!-- Botón para enviar la reseña -->
+        <Button text="Enviar Reseña" layoutX="600" layoutY="480" onAction="#enviarReseña" />
+    </children>
+</AnchorPane>

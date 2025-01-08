@@ -81,6 +81,41 @@ public class Actividad implements Mostrable {
 		return precio / duracion;
 	}
 	
+	/** Metodo set del atributo Nombre
+	 * @param nombre : String
+	 */
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	/** Metodo set del atributo Tipo
+	 * @param tipo : String
+	 */
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
+	}
+
+	/** Metodo set del atributo Precio
+	 * @param precio : rea
+	 */
+	public void setPrecio(double precio) {
+		this.precio = precio;
+	}
+
+	/**
+	 * @param duracion the duracion to set
+	 */
+	public void setDuracion(int duracion) {
+		this.duracion = duracion;
+	}
+
+	/**
+	 * @param dificultad the dificultad to set
+	 */
+	public void setDificultad(String dificultad) {
+		this.dificultad = dificultad;
+	}
+
 	/**
 	 * Metodo toString
 	 */

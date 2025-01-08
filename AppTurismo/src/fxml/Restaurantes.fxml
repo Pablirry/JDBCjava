@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="Controllers.RestaurantesController">
+    <children>
+        <!-- Fondo con una imagen -->
+        <ImageView fx:id="backgroundImage" fitWidth="800" fitHeight="600" preserveRatio="true" />
+
+        <!-- Encabezado -->
+        <Label text="Restaurantes en Asturias" layoutX="250" layoutY="20" style="-fx-font-size: 24; -fx-text-fill: white;" />
+
+        <!-- Contenedor para la lista de restaurantes -->
+        <VBox fx:id="restaurantList" spacing="10" layoutX="50" layoutY="70" prefWidth="700">
+            <!-- Ejemplo de un elemento de restaurante -->
+            <!-- Se genera dinámicamente en el controlador -->
+        </VBox>
+
+        <!-- Botón para regresar al menú principal -->
+        <Button text="Volver al Menú Principal" layoutX="300" layoutY="520" onAction="#volverAlMenu" />
+    </children>
+</AnchorPane>
